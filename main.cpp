@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     {
         s.timeAdvance();
         s.setBoundary();
-        if (i%100 == 0) {
+        if (i%plot_interval == 0) {
             std::cout << "step : " << i << std::endl;
             s.writeFile("step_"+std::to_string(i)+".dat");
         }

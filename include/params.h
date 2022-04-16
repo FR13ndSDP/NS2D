@@ -28,4 +28,6 @@ y 80
 #define T_wall (4.2*Temprature)
 #define soundSpeed sqrt(G * R * Temprature)
 
+#define plot_interval 1000
+
 #endif

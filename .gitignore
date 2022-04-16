@@ -33,3 +33,9 @@
 
 # VS code related
 .vscode/*
+
+# outputs
+bin/initial.dat
+bin/final.dat
+bin/step*
+bin/*.png

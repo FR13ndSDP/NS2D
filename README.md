@@ -1,4 +1,4 @@
 # NS2D
-A 2 dimensinal compressible flow solver
+A two dimensional compressible flow solver
 
 ALPHA version
