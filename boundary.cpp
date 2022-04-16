@@ -10,9 +10,9 @@ void Solver::setBoundary()
         // wall
         u = field.U[i][2][1];
         v = field.U[i][2][2];
-        Point n1 = mesh.cell(i-2, 0).faceNorm[3];
+        Point n = mesh.cell(i-2, 0).faceNorm[3];
         Point vel1(u,v);
-        Point vn1 = 2 * (vel1 * n1) * n1;
+        Point vn1 = 2 * (vel1 * n) * n;
         vel1 -= vn1;
         field.U[i][1][0] = field.U[i][2][0];
         field.U[i][1][1] = vel1[0];
@@ -21,9 +21,8 @@ void Solver::setBoundary()
 
         u = field.U[i][3][1];
         v = field.U[i][3][2];
-        Point n2 = mesh.cell(i-2, 0).faceNorm[3];
         Point vel2(u,v);
-        Point vn2 = 2 * (vel2 * n2) * n2;
+        Point vn2 = 2 * (vel2 * n) * n;
         vel2 -= vn2;
         field.U[i][0][0] = field.U[i][3][0];
         field.U[i][0][1] = vel2[0];

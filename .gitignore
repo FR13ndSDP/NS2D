@@ -39,3 +39,4 @@ bin/initial.dat
 bin/final.dat
 bin/step*
 bin/*.png
+bin/watch.ipynb
