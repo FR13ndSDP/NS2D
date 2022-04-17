@@ -11,20 +11,19 @@ int main(int argc, char *argv[])
     start_t = clock();
 #endif
     Solver s;
-    s.init();
-    s.setBoundary();
+    std::string filename = "step_10000.dat";
+    int step = 10000;
+    s.init(filename);
     s.writeFile("initial.dat");
-    for (int i = 1; i <= std::stoi(argv[1]); i++)
+    for (int i = step; i <= step + std::stoi(argv[1]); i++)
     {
         s.timeAdvance();
-        s.setBoundary();
         if (i%plot_interval == 0) {
             std::cout << "step : " << i << std::endl;
             s.writeFile("step_"+std::to_string(i)+".dat");
         }
     }
     s.writeFile("final.dat");
-    s.writeDebug();
 
 #ifdef TIMING
     end_t = clock();

@@ -53,9 +53,49 @@ void Field::init() {
             U[i][j][1] = inlet[1];
             U[i][j][2] = inlet[2];
             U[i][j][3] = inlet[3];
+#ifdef test
+            if (j<int(ngy/2.0)) {
+                U[i][j][0] = 1.0;
+                U[i][j][1] = 0.0;
+                U[i][j][2] = 1.0;
+                U[i][j][3] = 1.0/(G-1) + 0.5*1.0;
+            } else {
+                U[i][j][0] = 0.125;
+                U[i][j][1] = 0.0;
+                U[i][j][2] = 0.0;
+                U[i][j][3] = 0.1/(G-1);
+            }
+#endif
         }
     }
     cons2prim();
+}
+
+void Field::initFromFile(std::string name) {
+    std::ifstream dataFile(name);
+    if (!dataFile.is_open()) throw std::runtime_error("could not open file");
+    std::string nonesense, line, var;
+    int i=0, j=0;
+
+    if (dataFile.good()) {
+        // skip first three lines
+        std::getline(dataFile, nonesense);
+        std::getline(dataFile, nonesense);
+        std::getline(dataFile, nonesense);
+    }
+
+    // read all the points
+    while (!dataFile.eof()) {
+        dataFile >> nonesense >> nonesense\
+        >> prim[i+2][j+2][0] >> prim[i+2][j+2][1] >> prim[i+2][j+2][2] >> prim[i+2][j+2][3] >> nonesense;
+        if (j == ncy-1) {
+            j = 0; i++;
+        } else {
+            j++;
+        }
+    }
+    dataFile.close();
+    prim2cons();
 }
 
 void Field::cons2prim() {
