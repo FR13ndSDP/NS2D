@@ -22,7 +22,7 @@ public:
 
     //void getInput();
     
-    void init();
+    void init(std::string name);
 
     void setBoundary();
 
@@ -34,7 +34,9 @@ public:
 
     void writeFile(std::string name);
 
-    void writeDebug();
+    void writeDebug_F();
+    
+    void writeDebug_U();
 };
 
 #endif

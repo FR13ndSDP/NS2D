@@ -3,6 +3,7 @@
 void Solver::timeAdvance()
 {
 #ifdef EULER
+    setBoundary();
     computeFlux();
     computeRHS();
     for (int i = nGhost; i < ncx + nGhost; i++)
@@ -19,6 +20,7 @@ void Solver::timeAdvance()
 
 #ifdef RK2
 // stage 1
+    setBoundary();
     field.U2Un();
     computeFlux();
     computeRHS();
@@ -33,6 +35,7 @@ void Solver::timeAdvance()
         }
     }
 // stage 2
+    setBoundary();
     computeFlux();
     computeRHS();
     for (int i = nGhost; i < ncx + nGhost; i++)
@@ -50,6 +53,7 @@ void Solver::timeAdvance()
 
 #ifdef RK3
 // stage 1
+    setBoundary();
     field.U2Un();
     computeFlux();
     computeRHS();
@@ -64,6 +68,7 @@ void Solver::timeAdvance()
         }
     }
 // stage 2
+    setBoundary();
     computeFlux();
     computeRHS();
     for (int i = nGhost; i < ncx + nGhost; i++)
@@ -78,6 +83,7 @@ void Solver::timeAdvance()
         }
     }
 // stage 3
+    setBoundary();
     field.U2Un();
     computeFlux();
     computeRHS();

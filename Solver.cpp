@@ -35,9 +35,14 @@ Solver::~Solver()
     delete[] rhs;
 };
 
-void Solver::init()
+void Solver::init(std::string name)
 {
-    field.init();
+    if (name.empty())
+    {
+        field.init();
+    } else {
+        field.initFromFile(name);
+    }
     mesh.readMesh("mesh2d.dat");
 }
 
@@ -75,9 +80,9 @@ void Solver::computeRHS()
             {
                 rhs[i][j][k] = -1 / mesh.cell(i, j).volume *
                                (f.Fx[i + 1][j][k] - f.Fx[i][j][k] + f.Fy[i][j+1][k] - f.Fy[i][j][k]);
-                if (fabs(rhs[i][j][k]) > rhs_max)
-                    rhs_max = fabs(rhs[i][j][k]);
             }
+            if (fabs(rhs[i][j][0]) > rhs_max)
+                    rhs_max = fabs(rhs[i][j][0]);
         }
     }
     std::cout << "max rhs : " << rhs_max << std:: endl;
@@ -106,8 +111,13 @@ void Solver::computeFlux()
         {
             for (int k = 0; k < 4; k++)
             {
-                UL[k] = field.U[i + 2][j + 1][k];
-                UR[k] = field.U[i + 2][j + 2][k];
+                if (j == 0) {
+                    UL[k] = field.U[i + 2][j + 1][k];
+                    UR[k] = field.U[i + 2][j + 2][k];
+                } else {
+                UL[k] = field.U[i + 2][j + 1][k] + 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 2][j + 1][k], field.U[i + 2][j + 1][k]-field.U[i + 2][j][k]);
+                UR[k] = field.U[i + 2][j + 2][k] - 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 2][j + 1][k], field.U[i + 2][j + 3][k]-field.U[i + 2][j+2][k]);
+                }
             }
             primL[0] = UL[0];
             primL[1] = UL[1] / UL[0];
@@ -157,8 +167,8 @@ void Solver::computeFlux()
         {
             for (int k = 0; k < 4; k++)
             {
-                UL[k] = field.U[i + 1][j + 2][k];
-                UR[k] = field.U[i + 2][j + 2][k];
+                UL[k] = field.U[i + 1][j + 2][k] + 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 1][j + 2][k], field.U[i + 1][j + 2][k]-field.U[i][j+2][k]);
+                UR[k] = field.U[i + 2][j + 2][k] - 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 1][j + 2][k], field.U[i + 3][j + 2][k]-field.U[i + 2][j+2][k]);
             }
             primL[0] = UL[0];
             primL[1] = UL[1] / UL[0];
