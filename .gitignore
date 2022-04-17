@@ -35,8 +35,9 @@
 .vscode/*
 
 # outputs
+bin/euler
 bin/initial.dat
 bin/final.dat
+bin/debug.dat
 bin/step*
 bin/*.png
-bin/watch.ipynb
