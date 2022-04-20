@@ -9,7 +9,7 @@ void Cell::getVolume() {
 
 void Cell::getCenter() {
     double x = 0, y = 0;
-    for (auto i: {0, 1, 2, 3}) {
+    for (int i=0; i<4; i++) {
         x += points[i][0];
         y += points[i][1];
     }

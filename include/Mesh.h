@@ -1,35 +1,34 @@
 #ifndef _MESH_
 #define _MESH_
-#include <string>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <vector>
-#include "params.h"
-#include "Cell.h"
 
-// forward declaration here
-class Cell;
+#include "Cell.h"
+#include "params.h"
+
 
 class Mesh {
-private:
-public:
-    std::vector<Cell> cells;
-    // int nx, ny;
-    Mesh();
-    
-    ~Mesh();
-    // return cell(i,j)
-    Cell cell(int i, int j);
+ private:
+ public:
+  std::vector<Cell> cells;
+  // int nx, ny;
+  Mesh();
 
-    // return cell according to the index
-    Cell cell(int id);
+  ~Mesh();
+  // return cell(i,j)
+  Cell cell(int i, int j);
 
-    void readMesh(std::string filename);
+  // return cell according to the index
+  Cell cell(int id);
 
-    friend std::ostream &operator<<(std::ostream &out, Mesh &m) {
-        out << "mesh size : (" << nx << ", " << ny << ")";
-        return out;
-    }
+  void readMesh(std::string filename);
+
+  friend std::ostream &operator<<(std::ostream &out, Mesh &m) {
+    out << "mesh size : (" << nx << ", " << ny << ")";
+    return out;
+  }
 };
 
 #endif

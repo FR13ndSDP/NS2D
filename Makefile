@@ -2,7 +2,7 @@
 
 CCPLUS=g++
 MPICC = mpic++
-CFLAGS= -O3 -Wall -DRK2 -DAUSM -DTIMING
+CFLAGS= -O2 -Wall -DRK2
 BINS=./bin/euler
 INCLUDE= -I./include
 OUPUT_DIR:= build

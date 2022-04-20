@@ -30,6 +30,10 @@ public:
 
     void computeFlux();
 
+    void computeFlux_x();
+    
+    void computeFlux_y();
+
     void timeAdvance();
 
     void writeFile(std::string name);
@@ -37,6 +41,16 @@ public:
     void writeDebug_F();
     
     void writeDebug_U();
+
+    void writeDebug_G();
+
+    double jacx(int i, int j);
+
+    double jacy(int i, int j);
+
+    double* vis_x(int i, int j);
+
+    double* vis_y(int i, int j);
 };
 
 #endif

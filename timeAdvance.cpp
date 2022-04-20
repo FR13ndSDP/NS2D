@@ -12,7 +12,7 @@ void Solver::timeAdvance()
         {
             for (int k = 0; k < 4; k++)
             {
-                field.U[i][j][k] += dt * rhs[i - 2][j - 2][k];
+                field.U[i][j][k] += -1 / mesh.cell(i-2, j-2).volume * dt * rhs[i - 2][j - 2][k];
             }
         }
     }
@@ -30,7 +30,7 @@ void Solver::timeAdvance()
         {
             for (int k = 0; k < 4; k++)
             {
-                field.U[i][j][k] += dt * rhs[i - 2][j - 2][k];
+                field.U[i][j][k] += -1 / mesh.cell(i-2, j-2).volume * dt * rhs[i - 2][j - 2][k];
             }
         }
     }
@@ -45,7 +45,7 @@ void Solver::timeAdvance()
             for (int k = 0; k < 4; k++)
             {
                 field.U[i][j][k] = 0.5 * field.Un[i][j][k] + \
-                0.5*(field.U[i][j][k] + dt * rhs[i - 2][j - 2][k]);
+                0.5*(field.U[i][j][k] -1 / mesh.cell(i-2, j-2).volume * dt * rhs[i - 2][j - 2][k]);
             }
         }
     }
@@ -63,7 +63,7 @@ void Solver::timeAdvance()
         {
             for (int k = 0; k < 4; k++)
             {
-                field.U[i][j][k] = field.Un[i][j][k] + dt * rhs[i - 2][j - 2][k];
+                field.U[i][j][k] = field.Un[i][j][k] -1 / mesh.cell(i-2, j-2).volume * dt * rhs[i - 2][j - 2][k];
             }
         }
     }
@@ -78,7 +78,7 @@ void Solver::timeAdvance()
             for (int k = 0; k < 4; k++)
             {
                 field.U[i][j][k] = 0.75 * field.Un[i][j][k] + \
-                                   0.25*(field.U[i][j][k] + dt * rhs[i - 2][j - 2][k]);
+                                   0.25*(field.U[i][j][k] -1 / mesh.cell(i-2, j-2).volume * dt * rhs[i - 2][j - 2][k]);
             }
         }
     }
@@ -94,7 +94,7 @@ void Solver::timeAdvance()
             for (int k = 0; k < 4; k++)
             {
                 field.U[i][j][k] = 1.0/3.0 * field.Un[i][j][k] + \
-                                   2.0/3.0 * (field.U[i][j][k] + dt * rhs[i - 2][j - 2][k]);
+                                   2.0/3.0 * (field.U[i][j][k] -1 / mesh.cell(i-2, j-2).volume * dt * rhs[i - 2][j - 2][k]);
             }
         }
     }

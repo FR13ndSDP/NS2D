@@ -44,3 +44,24 @@ void Solver::writeDebug_U() {
 
     file.close();
 }
+
+void Solver::writeDebug_G() {
+    std::ofstream file("debug_G.dat", std::ios::out);
+    file << "TITLE = \"CONE\"" << std::endl;
+    //file << "VARIABLES = \"x\", \"y\", \"varx1\", \"varx2\", \"varx3\", \"varx4\", "
+    //     << "\"vary1\", \"vary2\", \"vary3\", \"vary4\""<< std::endl;
+    file << "VARIABLES =\"x\", \"y\", \"volume\"" << std::endl;
+    file << "ZONE I=" << ncy << " J=" << ncx << std::endl;
+    for (int i = 0; i < ncx; i++) {
+        for (int j=0; j<ncy; j++) {
+            file << mesh.cell(i,j).center.coord_x << " "\
+                 << mesh.cell(i,j).center.coord_y << " "; 
+
+            file << mesh.cell(i,j).area[0] << std::endl;
+        }
+    }
+
+
+    file.close();
+}
+

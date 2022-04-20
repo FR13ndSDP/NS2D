@@ -40,6 +40,8 @@ public:
     void initFromFile(std::string name);
 
     void U2Un();
+
+    double Temp(int i, int j);
 };
 
 #endif

@@ -20,10 +20,9 @@ y 80
 #define R 287
 #define G 1.4
 #define Ma 6.0
-#define Re 10000
 
-#define rho_infty 1.29
-#define dt 1e-6
+#define rho_infty 8.148e-5
+#define dt 1e-7
 #define Temprature 226.5
 #define T_wall (4.2*Temprature)
 #define soundSpeed sqrt(G * R * Temprature)

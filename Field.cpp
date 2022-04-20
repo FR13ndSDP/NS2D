@@ -53,19 +53,6 @@ void Field::init() {
             U[i][j][1] = inlet[1];
             U[i][j][2] = inlet[2];
             U[i][j][3] = inlet[3];
-#ifdef test
-            if (j<int(ngy/2.0)) {
-                U[i][j][0] = 1.0;
-                U[i][j][1] = 0.0;
-                U[i][j][2] = 1.0;
-                U[i][j][3] = 1.0/(G-1) + 0.5*1.0;
-            } else {
-                U[i][j][0] = 0.125;
-                U[i][j][1] = 0.0;
-                U[i][j][2] = 0.0;
-                U[i][j][3] = 0.1/(G-1);
-            }
-#endif
         }
     }
     cons2prim();
@@ -122,4 +109,8 @@ void Field::prim2cons() {
                          (prim[i][j][1]*prim[i][j][1] + prim[i][j][2]*prim[i][j][2]);
         }
     }
+}
+
+double Field::Temp(int i, int j) {
+    return prim[i][j][3]/(R * prim[i][j][0]);
 }
