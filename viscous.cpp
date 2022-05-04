@@ -1,13 +1,13 @@
 #include "./include/Solver.h"
 
-double mu_t(double T) {
+double Solver::mu_t(double T) {
     double mu_0 = 1.716e-5, T_ref = 273.15, T_0 = 111;
     double mu = mu_0*pow(T/T_ref, 1.5)*(T_ref + T_0)/(T + T_0);
     return mu;
 }
 
-double k_t(double T) {
-    double Pr = 0.77, cp = G * R/(G-1);
+double Solver::k_t(double T) {
+    double cp = G * R/(G-1);
     double k = mu_t(T) * cp / Pr;
     return k;
 }
@@ -61,7 +61,7 @@ double* Solver::vis_x(int i, int j) {
     if (i == 0) {
         T_avg = field.Temp(iprim, jprim);
     } else if (i == ncx) {
-        T_avg = field.Temp(iprim, jprim);
+        T_avg = field.Temp(iprim-1, jprim);
     } else {
         T_avg = (field.Temp(iprim, jprim) + field.Temp(iprim-1, jprim))/2.0;
     }
@@ -199,4 +199,16 @@ double* Solver::vis_y(int i, int j) {
     viscous_y[4] = u1*viscous_y[2] + v1*viscous_y[1] + k*Ty;
 
     return viscous_y;
+}
+
+void Solver::fill_corner() {
+    for (int i=0; i<4; i++) {
+        field.prim[1][1][i] = field.prim[1][2][i] + field.prim[2][1][i] - field.prim[2][2][i];
+        field.prim[1][ncy+nGhost][i] = field.prim[1][ncy+nGhost-1][i] + field.prim[2][ncy+nGhost][i]\
+                                      - field.prim[2][ncy+nGhost-1][i];
+        field.prim[ncx+nGhost][1][i] = field.prim[ncx+nGhost][2][i] + field.prim[ncx+nGhost-1][1][i]\
+                                     - field.prim[ncx+nGhost-1][2][i];
+        field.prim[ncx+nGhost][ncy+nGhost][i] = field.prim[ncx+nGhost][ncy+nGhost-1][i] + field.prim[ncx+nGhost-1][ncy+nGhost][i]\
+                                     - field.prim[ncx+nGhost-1][ncy+nGhost-1][i];
+    }
 }

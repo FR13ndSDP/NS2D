@@ -16,6 +16,8 @@ public:
     
     double ***rhs;
 
+    double **dt_local;
+
     Solver();
 
     ~Solver();
@@ -28,6 +30,10 @@ public:
 
     void computeRHS();
 
+    void computeDt();
+
+    void showRHS();
+
     void computeFlux();
 
     void computeFlux_x();
@@ -38,12 +44,6 @@ public:
 
     void writeFile(std::string name);
 
-    void writeDebug_F();
-    
-    void writeDebug_U();
-
-    void writeDebug_G();
-
     double jacx(int i, int j);
 
     double jacy(int i, int j);
@@ -51,6 +51,12 @@ public:
     double* vis_x(int i, int j);
 
     double* vis_y(int i, int j);
+
+    void fill_corner();
+
+    double mu_t(double T);
+
+    double k_t(double T);
 };
 
 #endif

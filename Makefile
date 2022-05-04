@@ -2,8 +2,8 @@
 
 CCPLUS=g++
 MPICC = mpic++
-CFLAGS= -O2 -Wall -DRK2
-BINS=./bin/euler
+CFLAGS= -O3 -Wall -DRK2
+BINS=./bin/solver
 INCLUDE= -I./include
 OUPUT_DIR:= build
 SOURCES= $(wildcard *.cpp)
