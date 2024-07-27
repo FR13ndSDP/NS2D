@@ -169,6 +169,7 @@ void Solver::computeFlux_x() {
             f.Fx[i][j][3] = fx[3] * A;
 
             // viscous part
+            vx = vis_x(i, j);
             f.Fx[i][j][1] += -(vx[0] * ni + vx[2] * nj) * A;
             f.Fx[i][j][2] += -(vx[2] * ni + vx[1] * nj) * A;
             f.Fx[i][j][3] += -(vx[3] * ni + vx[4] * nj) * A;
