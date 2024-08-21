@@ -26,7 +26,9 @@ public:
     
     void init(std::string name);
 
-    void setBoundary();
+    void setBoundary_cylinder();
+    
+    void setBoundary_sod();
 
     void computeRHS();
 

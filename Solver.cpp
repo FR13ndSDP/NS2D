@@ -30,7 +30,11 @@ Solver::~Solver() {
 
 void Solver::init(std::string name) {
     if (name.empty()) {
-        field.init();
+#ifdef SOD
+        field.init_sod();
+#else 
+        field.init_cylinder();
+#endif
     } else {
         field.initFromFile(name);
     }
@@ -88,12 +92,17 @@ void Solver::showRHS() {
 
 
 void Solver::computeDt() {
+    
+#ifdef LTS
     double CFL = 0.7;
     double dt_max = 0.001;
     double dt_min = 1e-9;
+#endif
+
     for (int i = 0; i < ncx; i++) {
         for (int j = 0; j < ncy; j++) {
 
+#ifdef LTS
         double s0 = mesh.cell(i,j).volume;
         double si=0.5 * (mesh.cell(i,j).area[0] + mesh.cell(i,j).area[2]);
         double sj=0.5 * (mesh.cell(i,j).area[1] + mesh.cell(i,j).area[3]);
@@ -112,6 +121,9 @@ void Solver::computeDt() {
         double dt_l=CFL*s0/(Lci + Lcj + Lvi + Lvj);
         dt_local[i][j] = dt_l > dt_max ? dt_max : dt_l;
         dt_local[i][j] = dt_l < dt_min ? dt_min : dt_l;
+#else
+        dt_local[i][j] = dt;
+#endif
         }
     }
 }

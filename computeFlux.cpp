@@ -86,11 +86,13 @@ void Solver::computeFlux_y()
             f.Fy[i][j][0] = fy[0] * A;
             f.Fy[i][j][3] = fy[3] * A;
 
-            // viscous part
+#ifdef VISC
+            // // viscous part
             vy = vis_y(i, j);
             f.Fy[i][j][1] += -(vy[0] * ni + vy[2] * nj) * A;
             f.Fy[i][j][2] += -(vy[2] * ni + vy[1] * nj) * A;
             f.Fy[i][j][3] += -(vy[3] * ni + vy[4] * nj) * A;
+#endif
         }
     }
 
@@ -168,11 +170,13 @@ void Solver::computeFlux_x() {
             f.Fx[i][j][0] = fx[0] * A;
             f.Fx[i][j][3] = fx[3] * A;
 
-            // viscous part
+#ifdef VISC
+            // // viscous part
             vx = vis_x(i, j);
             f.Fx[i][j][1] += -(vx[0] * ni + vx[2] * nj) * A;
             f.Fx[i][j][2] += -(vx[2] * ni + vx[1] * nj) * A;
             f.Fx[i][j][3] += -(vx[3] * ni + vx[4] * nj) * A;
+#endif
         }
     }
 

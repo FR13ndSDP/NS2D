@@ -23,12 +23,12 @@ y 80
 #define Pr 0.77
 
 #define rho_infty 8.148e-5
-#define dt 1e-7
+#define dt 5e-4
 #define Temprature 226.5
 #define T_wall (4.2*Temprature)
 #define soundSpeed sqrt(G * R * Temprature)
 
-#define plot_interval 1000
+#define plot_interval 100
 #define show_interval 10
 
 #endif

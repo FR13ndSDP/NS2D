@@ -45,7 +45,7 @@ void Field::U2Un() {
     }
 }
 
-void Field::init() {
+void Field::init_cylinder() {
     for (int i=0; i<ngx; i++) {
         for (int j=0; j<ngy; j++) {
             // ic for the cone here
@@ -53,6 +53,26 @@ void Field::init() {
             U[i][j][1] = inlet[1];
             U[i][j][2] = inlet[2];
             U[i][j][3] = inlet[3];
+        }
+    }
+    cons2prim();
+}
+
+void Field::init_sod() {
+    for (int i=0; i<ngx; i++) {
+        for (int j=0; j<ngy; j++) {
+            // ic for the cone here
+            if (i < ngx/2) {
+                U[i][j][0] = 1.0;
+                U[i][j][1] = 0.0;
+                U[i][j][2] = 0.0;
+                U[i][j][3] = 1.0/(G-1);
+            } else {
+                U[i][j][0] = 0.1;
+                U[i][j][1] = 0.0;
+                U[i][j][2] = 0.0;
+                U[i][j][3] = 0.125/(G-1);
+            }
         }
     }
     cons2prim();

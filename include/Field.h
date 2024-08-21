@@ -35,7 +35,9 @@ public:
 
     void prim2cons();
 
-    void init();
+    void init_cylinder();
+    
+    void init_sod();
 
     void initFromFile(std::string name);
 

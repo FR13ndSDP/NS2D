@@ -3,7 +3,11 @@
 void Solver::timeAdvance()
 {
 #ifdef EULER
-    setBoundary();
+#ifdef SOD
+    setBoundary_sod();
+#else
+    setBoundary_cylinder();
+#endif
     computeFlux();
     computeRHS();
     computeDt();
@@ -21,7 +25,11 @@ void Solver::timeAdvance()
 
 #ifdef RK2
 // stage 1
-    setBoundary();
+#ifdef SOD
+    setBoundary_sod();
+#else
+    setBoundary_cylinder();
+#endif
     field.U2Un();
     computeFlux();
     computeRHS();
@@ -37,7 +45,11 @@ void Solver::timeAdvance()
         }
     }
 // stage 2
-    setBoundary();
+#ifdef SOD
+    setBoundary_sod();
+#else
+    setBoundary_cylinder();
+#endif
     computeFlux();
     computeRHS();
     for (int i = 0; i < ncx; i++)
