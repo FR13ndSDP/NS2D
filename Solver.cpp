@@ -4,14 +4,14 @@
 
 Solver::Solver() {
     rhs = new double **[ncx];
-    dt_local = new double *[ncx];
     for (int i = 0; i < ncx; i++) {
         rhs[i] = new double *[ncy];
-        dt_local[i] = new double [ncy];
         for (int j = 0; j < ncy; j++) {
             rhs[i][j] = new double[4];
         }
     }
+
+    dt = 1e-8; // initial dt;
 };
 
 Solver::~Solver() {
@@ -22,10 +22,6 @@ Solver::~Solver() {
         delete[] rhs[i];
     }
     delete[] rhs;
-    for (int i = 0; i < ncx; i++) {
-        delete[] dt_local[i];
-    }
-    delete[] dt_local;
 };
 
 void Solver::init(std::string name) {
@@ -45,7 +41,7 @@ void Solver::writeFile(std::string name) {
     field.cons2prim();
     std::ofstream file(name, std::ios::out);
     file << "TITLE = \"CONE\"" << std::endl;
-    file << "VARIABLES = \"x\", \"y\", \"rho\", \"u\", \"v\", \"p\", \"T\""
+    file << "VARIABLES = \"x\", \"y\", \"rho\", \"u\", \"v\", \"lambda\", \"T\""
          << std::endl;
     file << "ZONE I=" << ncy << " J=" << ncx << std::endl;
     for (int i = 0; i < ncx; i++) {
@@ -91,18 +87,11 @@ void Solver::showRHS() {
 }
 
 
-void Solver::computeDt() {
-    
-#ifdef LTS
-    double CFL = 0.7;
-    double dt_max = 0.001;
-    double dt_min = 1e-9;
-#endif
+void Solver::computeDt(double time, double stop_time) {
+    double mindt = 1e16;
 
     for (int i = 0; i < ncx; i++) {
         for (int j = 0; j < ncy; j++) {
-
-#ifdef LTS
         double s0 = mesh.cell(i,j).volume;
         double si=0.5 * (mesh.cell(i,j).area[0] + mesh.cell(i,j).area[2]);
         double sj=0.5 * (mesh.cell(i,j).area[1] + mesh.cell(i,j).area[3]);
@@ -114,16 +103,15 @@ void Solver::computeDt() {
         double Lci=(fabs(uni)+cc)*si;
         double Lcj=(fabs(unj)+cc)*sj;
 
-        double tmp = G/field.prim[i+nGhost][j+nGhost][0]*mu_t(field.Temp(i+nGhost, j+nGhost))/Pr;
-        double Lvi = tmp*si*si/s0;
-        double Lvj = tmp*sj*sj/s0;
+        double dt_l=s0/std::max(Lci, Lcj);
 
-        double dt_l=CFL*s0/(Lci + Lcj + Lvi + Lvj);
-        dt_local[i][j] = dt_l > dt_max ? dt_max : dt_l;
-        dt_local[i][j] = dt_l < dt_min ? dt_min : dt_l;
-#else
-        dt_local[i][j] = dt;
-#endif
+        if (dt_l < mindt)
+            mindt = dt_l;
         }
     }
+
+    dt = mindt * CFL;
+
+    if (time + dt > stop_time) 
+        dt = stop_time - time;
 }

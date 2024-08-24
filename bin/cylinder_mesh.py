@@ -21,8 +21,8 @@ for i in range(nx):
         y[i, j] = Ri * np.cos(theta)
 
 
-plt.scatter(x,y)
-plt.show()
+# plt.scatter(x,y)
+# plt.show()
 
 with open("mesh2d.dat", "w") as f:
     f.write("variables=x,y\n")

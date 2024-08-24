@@ -4,8 +4,8 @@ CCPLUS=g++
 MPICC = mpic++
 # FOR SOD PROBLEM, none viscous, unsteady
 # CFLAGS= -O3 -Wall -DRK2 -DSOD
-# FOR SUPERSONIC CYLINDER, viscous, steady
-CFLAGS= -O3 -Wall -DRK2 -DVISC -DLTS
+# FOR SUPERSONIC CYLINDER
+CFLAGS= -O3 -Wall -DRK2
 BINS=./bin/solver
 INCLUDE= -I./include
 OUPUT_DIR:= build

@@ -108,12 +108,12 @@ void Field::initFromFile(std::string name) {
 void Field::cons2prim() {
     for (int i=0; i<ngx; i++) {
         for (int j=0; j<ngy; j++) {
-            prim[i][j][0] = U[i][j][0];
-            prim[i][j][1] = U[i][j][1]/U[i][j][0];
-            prim[i][j][2] = U[i][j][2]/U[i][j][0];
-            prim[i][j][3] = (U[i][j][3] - 0.5 * prim[i][j][0] *(\
-                             prim[i][j][1]*prim[i][j][1] + prim[i][j][2]*prim[i][j][2])) \
-                             * (G-1.0);
+            double rho = U[i][j][0];
+            prim[i][j][0] = rho;
+            prim[i][j][1] = U[i][j][1]/rho;
+            prim[i][j][2] = U[i][j][2]/rho;
+            prim[i][j][3] = (K+2) * rho / (4*(U[i][j][3] - 0.5 * rho *(\
+                             prim[i][j][1]*prim[i][j][1] + prim[i][j][2]*prim[i][j][2])));
         }
     }
 }
@@ -121,16 +121,16 @@ void Field::cons2prim() {
 void Field::prim2cons() {
     for (int i=0; i<ngx; i++) {
         for (int j=0; j<ngy; j++) {
-            U[i][j][0] = prim[i][j][0];
-            U[i][j][1] = prim[i][j][0] * prim[i][j][1];
-            U[i][j][2] = prim[i][j][0] * prim[i][j][2];
-            U[i][j][3] = prim[i][j][3]/(G-1.0) \
-                         + 0.5*prim[i][j][0]*\
-                         (prim[i][j][1]*prim[i][j][1] + prim[i][j][2]*prim[i][j][2]);
+            double rho = prim[i][j][0];
+            U[i][j][0] = rho;
+            U[i][j][1] = rho * prim[i][j][1];
+            U[i][j][2] = rho * prim[i][j][2];
+            U[i][j][3] = 0.5 * rho * (prim[i][j][1]*prim[i][j][1] \
+                        + prim[i][j][2]*prim[i][j][2] + (K+2.0)/(2.0 * prim[i][j][3]));
         }
     }
 }
 
 double Field::Temp(int i, int j) {
-    return prim[i][j][3]/(R * prim[i][j][0]);
+    return 1.0/(2.0 * R * prim[i][j][3]);
 }

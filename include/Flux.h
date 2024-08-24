@@ -15,7 +15,7 @@ public:
 
     ~Flux();
     
-    void fluxSplit(double *primL, double *primR, double *Flux);
+    void fluxSplit(double *primL, double *primR, double *Flux, double dt);
 };
 
 #endif

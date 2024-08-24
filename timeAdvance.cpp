@@ -1,6 +1,6 @@
 #include "./include/Solver.h"
 
-void Solver::timeAdvance()
+void Solver::timeAdvance(double time, double stop_time)
 {
 #ifdef EULER
 #ifdef SOD
@@ -10,14 +10,15 @@ void Solver::timeAdvance()
 #endif
     computeFlux();
     computeRHS();
-    computeDt();
+    computeDt(time, stop_time);
+    
     for (int i = 0; i < ncx; i++)
     {
         for (int j = 0; j < ncy; j++)
         {
             for (int k = 0; k < 4; k++)
             {
-                field.U[i+nGhost][j+nGhost][k] += -dt_local[i][j] * rhs[i][j][k];
+                field.U[i+nGhost][j+nGhost][k] += -rhs[i][j][k];
             }
         }
     }
@@ -33,14 +34,14 @@ void Solver::timeAdvance()
     field.U2Un();
     computeFlux();
     computeRHS();
-    computeDt();
+    computeDt(time, stop_time);
     for (int i = 0; i < ncx; i++)
     {
         for (int j = 0; j < ncy; j++)
         {
             for (int k = 0; k < 4; k++)
             {
-                field.U[i+nGhost][j+nGhost][k] += -dt_local[i][j] * rhs[i][j][k];
+                field.U[i+nGhost][j+nGhost][k] += -rhs[i][j][k];
             }
         }
     }
@@ -59,7 +60,7 @@ void Solver::timeAdvance()
             for (int k = 0; k < 4; k++)
             {
                 field.U[i+nGhost][j+nGhost][k] = 0.5 * field.Un[i+nGhost][j+nGhost][k] + \
-                0.5*(field.U[i+nGhost][j+nGhost][k] - dt_local[i][j] * rhs[i][j][k]);
+                0.5*(field.U[i+nGhost][j+nGhost][k] - rhs[i][j][k]);
             }
         }
     }

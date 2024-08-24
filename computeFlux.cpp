@@ -10,7 +10,6 @@ double minMod(double var1, double var2) {
 
 void Solver::computeFlux() {
     field.cons2prim();
-    fill_corner();
     computeFlux_x();
     computeFlux_y();
 }
@@ -32,8 +31,6 @@ void Solver::computeFlux_y()
     double ni, nj;
     double A;
 
-    double *vy = new double [5];
-
     // y direction (0,I)->(0,I+1)
     for (int i = 0; i < ncx; i++)
     {
@@ -42,19 +39,19 @@ void Solver::computeFlux_y()
             for (int k = 0; k < 4; k++)
             {
                 // make wall boundary more robust
-                UL[k] = field.U[i + 2][j + 1][k] + 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 2][j + 1][k], field.U[i + 2][j + 1][k]-field.U[i + 2][j][k]);
-                UR[k] = field.U[i + 2][j + 2][k] - 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 2][j + 1][k], field.U[i + 2][j + 3][k]-field.U[i + 2][j+2][k]);
+                UL[k] = field.U[i + 2][j + 1][k] ;//+ 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 2][j + 1][k], field.U[i + 2][j + 1][k]-field.U[i + 2][j][k]);
+                UR[k] = field.U[i + 2][j + 2][k] ;//- 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 2][j + 1][k], field.U[i + 2][j + 3][k]-field.U[i + 2][j+2][k]);
             }
 
             primL[0] = UL[0];
             primL[1] = UL[1] / UL[0];
             primL[2] = UL[2] / UL[0];
-            primL[3] = (G - 1.0) * (UL[3] - 0.5 * primL[0] * (primL[1] * primL[1] + primL[2] * primL[2]));
+            primL[3] = primL[0] * (K+2.0) / (4.0 * (UL[3] - 0.5 * primL[0] * (primL[1] * primL[1] + primL[2] * primL[2])));
 
             primR[0] = UR[0];
             primR[1] = UR[1] / UR[0];
             primR[2] = UR[2] / UR[0];
-            primR[3] = (G - 1.0) * (UR[3] - 0.5 * primR[0] * (primR[1] * primR[1] + primR[2] * primR[2]));
+            primR[3] = primR[0] * (K+2.0) / (4.0 * (UR[3] - 0.5 * primR[0] * (primR[1] * primR[1] + primR[2] * primR[2])));
             
             if (j != f.nfy - 1)
             {
@@ -79,20 +76,12 @@ void Solver::computeFlux_y()
             primR_rotate[2] = -primR[1] * nj + primR[2] * ni;
             primR_rotate[3] = primR[3];
             
-            f.fluxSplit(primL_rotate, primR_rotate, fy);
+            f.fluxSplit(primL_rotate, primR_rotate, fy, dt);
 
             f.Fy[i][j][1] = (fy[1] * ni - fy[2] * nj) * A;
             f.Fy[i][j][2] = (fy[1] * nj + fy[2] * ni) * A;
             f.Fy[i][j][0] = fy[0] * A;
             f.Fy[i][j][3] = fy[3] * A;
-
-#ifdef VISC
-            // // viscous part
-            vy = vis_y(i, j);
-            f.Fy[i][j][1] += -(vy[0] * ni + vy[2] * nj) * A;
-            f.Fy[i][j][2] += -(vy[2] * ni + vy[1] * nj) * A;
-            f.Fy[i][j][3] += -(vy[3] * ni + vy[4] * nj) * A;
-#endif
         }
     }
 
@@ -103,7 +92,6 @@ void Solver::computeFlux_y()
     delete[] primL_rotate;
     delete[] primR_rotate;
     delete[] fy;
-    delete[] vy;
 }
 
 void Solver::computeFlux_x() {
@@ -120,7 +108,6 @@ void Solver::computeFlux_x() {
     double ni, nj;
     double A;
 
-    double *vx = new double [5];
     // x direction (I,0)->(I+1,0)
     for (int i = 0; i < f.nfx; i++)
     {
@@ -128,18 +115,18 @@ void Solver::computeFlux_x() {
         {
             for (int k = 0; k < 4; k++)
             {
-                UL[k] = field.U[i + 1][j + 2][k] + 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 1][j + 2][k], field.U[i + 1][j + 2][k]-field.U[i][j+2][k]);
-                UR[k] = field.U[i + 2][j + 2][k] - 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 1][j + 2][k], field.U[i + 3][j + 2][k]-field.U[i + 2][j+2][k]);
+                UL[k] = field.U[i + 1][j + 2][k] ;//+ 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 1][j + 2][k], field.U[i + 1][j + 2][k]-field.U[i][j+2][k]);
+                UR[k] = field.U[i + 2][j + 2][k] ;//- 0.5 *minMod(field.U[i + 2][j + 2][k]-field.U[i + 1][j + 2][k], field.U[i + 3][j + 2][k]-field.U[i + 2][j+2][k]);
             }
             primL[0] = UL[0];
             primL[1] = UL[1] / UL[0];
             primL[2] = UL[2] / UL[0];
-            primL[3] = (G - 1.0) * (UL[3] - 0.5 * primL[0] * (primL[1] * primL[1] + primL[2] * primL[2]));
+            primL[3] = primL[0] * (K+2.0) / (4.0 * (UL[3] - 0.5 * primL[0] * (primL[1] * primL[1] + primL[2] * primL[2])));
 
             primR[0] = UR[0];
             primR[1] = UR[1] / UR[0];
             primR[2] = UR[2] / UR[0];
-            primR[3] = (G - 1.0) * (UR[3] - 0.5 * primR[0] * (primR[1] * primR[1] + primR[2] * primR[2]));
+            primR[3] = primR[0] * (K+2.0) / (4.0 * (UR[3] - 0.5 * primR[0] * (primR[1] * primR[1] + primR[2] * primR[2])));
 
             if (i != f.nfx - 1)
             {
@@ -163,20 +150,12 @@ void Solver::computeFlux_x() {
             primR_rotate[2] = -primR[1] * nj + primR[2] * ni;
             primR_rotate[3] = primR[3];
 
-            f.fluxSplit(primL_rotate, primR_rotate, fx);
+            f.fluxSplit(primL_rotate, primR_rotate, fx, dt);
 
             f.Fx[i][j][1] = (fx[1] * ni - fx[2] * nj) * A;
             f.Fx[i][j][2] = (fx[1] * nj + fx[2] * ni) * A;
             f.Fx[i][j][0] = fx[0] * A;
             f.Fx[i][j][3] = fx[3] * A;
-
-#ifdef VISC
-            // // viscous part
-            vx = vis_x(i, j);
-            f.Fx[i][j][1] += -(vx[0] * ni + vx[2] * nj) * A;
-            f.Fx[i][j][2] += -(vx[2] * ni + vx[1] * nj) * A;
-            f.Fx[i][j][3] += -(vx[3] * ni + vx[4] * nj) * A;
-#endif
         }
     }
 
@@ -187,5 +166,4 @@ void Solver::computeFlux_x() {
     delete[] primL_rotate;
     delete[] primR_rotate;
     delete[] fx;
-    delete[] vx;
 }
